@@ -1,0 +1,214 @@
+let addBtn=document.querySelector(".add-btn");
+let modal=document.querySelector(".modal-cont");
+let allPriorityColor=document.querySelectorAll(".priprity-color")
+let teextArea=document.querySelector(".tetarea-cont");
+let mainCont=document.querySelector(".main-cont");
+let removeBtn=document.querySelector(".remove-btn");
+let allFilterColor=document.querySelectorAll(".color");
+let color=["red","blue","green","black"];
+let modalPriorityColor="black";
+var uid=new ShortUnoqueId();
+//let ticketArr=[{id:od,color:color,task:task},{},{},{}]
+let ticketArr=[];//{color:color.id:id,task:task},{},{},{},{},{}];
+
+let addModal=true;
+let removeFlag=false;
+if(localStorage.getItem("click",function()){
+console.log(localStorage.getItem("tickets"));
+let strArr=localStoarge.getItem("tickets");
+let arr=JSON.parse(strArr);
+//console.log(arr);
+for(let i=0;i<arr.length;i++){
+let ticket=arr[i];
+createTicket(ticket.task,ticket.color,ticket.id);
+}
+}
+
+addBtn.addEventListener("click",function(){
+if(addModal){
+modal.style.display="flex";
+addModal=false;
+}
+else{
+modal.style.display="none";
+addModal=true;
+}
+})
+removeBtn.addEventListener("click",function(){
+if(removeFlag){
+removeBtn.style.color="black";
+removeFlag=flase;
+}
+else{
+removeBtn.style.color="red";
+removeFlag=true;
+}
+})
+
+for(let i=0;i<allFilterColor.length;i++){
+    allFilterColor[i].addEventListener("click",function(){
+    let allTicketsColor=document.querySelectorAll(".ticket-color")
+        //console.log(allFilterColor[i]);
+        let currentSelected=allFilterColor[0].classList[1];
+            //console.log(currentSelected);
+            for(let j=0;j<allTicketsColor.length;j++){
+let currentTicketColor=allTicketColor[j].classList[1];
+//console.log(currentTicketColor);
+if(currentSelected==currentTicketColor){
+allTicketColor[j].parentElement.style.display="black";
+}
+else{
+allTicketColor[j].parentElement.style.display="none";
+}
+}
+})
+//on double click show all tickets
+allFilterColor[i].addEventListener("dblclick",function(){
+let allTicketsColor=document.querySelectorAll(".ticket-color");
+for(let j=0;j<allTicketsColor.length;j++){
+allTicketsColor[j].parentElement.style.display="block";
+}
+})
+}
+
+textArea.addEventListener("keydown",function(e){
+//console.lof(e);
+let key=e.key;
+if(key=="Enter"){
+//console.log(task);
+let task=textArea.value;
+createTicket(task,modalPriorityColor);
+textArea.value="";
+modal.style.display="none";
+addModal=true;
+}
+})
+
+for(let i=0;i<allPriorityColor.length;i++{
+allPriorityColor[i].addEventListener("click",function(){
+for(let j=0;j<allPriorityColor.length;j++){
+if(allPriorityColor[j].classList.contains("active")){
+allPriorityColor[j].remove("active");
+}
+}
+allpriorityColor[i].classList.add("active");
+//console.log(allPriorityColor[i]);
+//console.log(allPriorityColor[i].classList);
+modalPriorityColor=allPriorityColor[i].classList[1];
+//console.log(modalPriorityColor);
+})
+}
+
+
+function createTicket(task,modalPriorityColor,ticketId){
+let id;
+if(ticketId){
+id=ticketId
+}
+else{
+id=uid();
+}
+//let id=uid();
+let ticketCont =document.createElement('div');
+ticketCont.setAttribute("class","ticket-cont");
+ticketCont.innerHTML=`<div class="ticket-color ${modalPriortyColor}"></div>
+<div class="ticket-id">#${id}></div>
+<div class="ticket-area">${task}<div>
+<div class="lock-unlock"><i class="fa-solid fa-lock"></i></div>
+//console.log(ticketCont);
+mainCont.append(ticketCont);
+ticketArr.push({color:modalPriorityColor,id:id,task:task});
+//let strArr= JSON.stringify(ticketArr);
+//console.log(strArr);
+//localStorage.setItem("tickets",strArr);
+//console.log(ticketArr);//at the end we are storing this in local //storage hence after refreshing we should retain the data
+updateLocalStorage();
+//handle delete of ticket
+ticketCont.addEventListener("click",function(){
+if(removeFlag)
+ticketCont.remove();
+let idx=ticketArr.findIndex(function(obj){
+return obj.id=id;
+})
+ticketArr.splice(idx,1);
+updateLocalStorage();
+}
+})
+//handle priority Color change
+let ticketColor= ticketCont.querySelector(".ticket-color");
+
+ticketColor.addEventListener("click",function(){
+//console.log(ticketColor);
+//console.log(ticketColor.classList[1]);
+let currentColor =ticketColor.classList[1];
+let currentColorIndex=color.findIndex(function(col){
+return col== currentColor;
+});
+//for(let i=0;i<color.length;i++){
+//if(color[i]==currentColor){
+//currentColorIndex=i;
+//break;
+//}
+//}
+//console.log(currentColorIndex);
+//["red","blue","green","black"]
+//[0    ,  1    , 2    ,3     ]
+let nextColorIndex=(currentColorIndex+1)%color.length;
+let nextColor=color[nextColorIndex];
+console.log(nextColor);
+ticketColor.classList.remove(currentColor);
+ticketColor.classList.add(nextColor);
+//let idx;
+//for(let i=0;i<ticketArr.length;i++){
+//if(ticketArr[i].id==id){
+//idx=i;
+//break;
+//}
+//}
+let idx=ticketArr.findIndex(function(obj){
+return obj.id=id;
+})
+//console.log(idx);
+ticketArr[idx].color=nextColor;
+console.log(ticketArr);
+//let strArr=JSON.stringify(ticketArr);
+//localStogare.setItem("tickets",strArr);
+updateLocalStorage();
+})
+
+//handle lock and unlock icon
+let lockUnlockBtn=ticketCont.querySelector(".lock-unlock");
+let taskArea=ticketCont.querySelector(".ticket-area");
+
+lockUnlockBtn.addEventListener("click",function(){
+console.log(lockUnlockBtn);
+if(lockUnlockBtn.classList.contains("fa-lock")){
+lockUnlockBtn.classList.remove("fa-lock");
+lockUnlockBtn.classList.add("fa-lock-open");
+taskArea.setAttribute("contenteditable","true");
+}
+else{
+lockUnlockBtn.classList.remove("fa-lock-open");
+lockUnlockBtn.classList.add("fa-lock");
+taskArea.setAttribute("contenteditable","false");
+}
+console.log(tickerArr);
+//let idx;
+//for(let i=0;i<ticketArr.length;i++){
+//if(ticketArr[i].id==id){
+//idx=i;
+//break;
+//}
+//}
+let idx=ticketArr.findIndex(function(obj){
+return obj.id=id;
+})
+ticketArr[idx].task=taskArea.innerText;
+updateLocalStorage();
+})
+}
+
+function updateLocalStorage(){
+let strArr=JSON.stringify(ticketArr);
+localStorage.setItem("tickets",strArr);
+}

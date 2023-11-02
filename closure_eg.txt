@@ -1,0 +1,33 @@
+function outer(name){
+	function inner1(){
+		console.log(name);
+	}
+	function inner2(){
+		console.log(name);
+	}
+	outer1();
+	outer2();
+}
+outer();
+
+eg2
+document.getElementById('orange').onclick=function(){
+	document.body.style.backgroundColor=('oragne');
+}
+document.getElementById('green').onclick=function(){
+	document.body.style.backgroundColor=('green');
+}
+
+//modified
+function clickHead(){
+document.body.style.backgroundColor=(${color});
+}
+document.getElementById('orange').onclick=clickHead('orange');
+
+//solution to this is
+function clickHead(){
+return function(){
+document.body.style.backgroundColor=(${color});
+}
+}
+document.getElementById('orange').onclick=clickHead('orange');
