@@ -1,273 +1,221 @@
-let addBtn = document.querySelector(".add-btn");
-let modal = document.querySelector(".modal-cont");
-let allPriorityColor = document.querySelectorAll(".priority-color");
-let textArea = document.querySelector(".textarea-cont");
-let mainCont = document.querySelector(".main-cont");
-let removeBtn = document.querySelector(".remove-btn");
-let allFilterColor = document.querySelectorAll(".color");
-let upperDiv = document.querySelector(".toolbox-cont");
-let color = ["red","blue","green","black"];
-let modalPriorityColor = "black";
-//var uid = new ShortUniqueId();
+//1. show and hide modal on click of button
+// figure out where to add event listener and what is the event. 
+    // add event listener on plus button and the event is of click
 
+//2. On click of delete btn make it red if again clicked make it black
+
+let addBtn = document.querySelector('.add-btn'); // selecting the add button
+let modalCont = document.querySelector('.modal-cont'); //selecting the modal
+let isModalHidden = true;
+
+let deleteBtn = document.querySelector(".remove-btn") // select the remove button
+let isDeleteBtnActive = false; // maintaining state for delete btn
+
+let textArea = document.querySelector('.textarea-cont'); // select the text area
+let mainCont = document.querySelector('.main-cont');
+let color = ['red','blue','green','pink'];
+
+//storing data of each ticket in the form of object
 let ticketArr = [];
 
-let addModal = true;
-let removeFlag = false;
-
-if(localStorage.getItem("tickets")){
-    // console.log(localStorage.getItem("tickets"));
-    let strArr = localStorage.getItem("tickets");
-    let arr = JSON.parse(strArr);
-    // console.log(arr);
-    for(let i=0;i<arr.length;i++){
-        let ticket = arr[i];
-        createTicket(ticket.task,ticket.color,ticket.id);
+if(localStorage.getItem('TaskArr')){
+    let ticketArrStr = localStorage.getItem("TaskArr");
+    ticketArr = JSON.parse(ticketArrStr);
+    for(let i=0;i<ticketArr.length;i++){
+        let ticket = ticketArr[i];
+        createTicket(ticket.value,ticket.color,ticket.id);
     }
 }
 
-upperDiv.addEventListener("click",function(e){
-    console.log(e.target); // it will give me where the event occured
-    if(e.target.classList[1] == "fa-plus"){
-        // console.log("Add Btn clicked");
-        if(addModal){
-            modal.style.display = "flex"; // show it
-            addModal = false; // setting variable for next click.
-        }else{
-            modal.style.display = "none";// hide it
-            addModal = true; // setting it for next click.
-        }
-    }else if(e.target.classList[1] == "fa-trash"){
-        if(removeFlag){
-            removeBtn.style.color = "black";
-            removeFlag = false;
-        }else{
-            removeBtn.style.color = "red";
-            removeFlag = true;
-        }
-        // console.log("Delete Btn clicked");
-    }else if(e.target.classList[0] == "color"){
-        let allTicketsColor = document.querySelectorAll(".ticket-color");
-    // console.log(allFilterColor[i]);
-        let currentSelected = e.target.classList[1];
-        console.log(currentSelected);
-    // console.log(currentSelected);
+//filter of ticket
+let filterColor = document.querySelectorAll('.color');
+for(let i=0;i<filterColor.length;i++){
+    filterColor[i].addEventListener('click',function(){
+        let allTicketsColor = document.querySelectorAll('.ticket-color');
+        // console.log(filterColor[i]);
+        let filterSelectdColor = filterColor[i].classList[1];
         for(let j=0;j<allTicketsColor.length;j++){
+            // console.log(allTicketsColor[j]);
             let currentTicketColor = allTicketsColor[j].classList[1];
             // console.log(currentTicketColor);
-            if(currentSelected == currentTicketColor){
-                allTicketsColor[j].parentElement.style.display = "block";
+            if(filterSelectdColor == currentTicketColor){
+                allTicketsColor[j].parentElement.style.display = 'block' // show it
             }else{
-                allTicketsColor[j].parentElement.style.display = "none";
+                allTicketsColor[j].parentElement.style.display = 'none' // hide it
             }
-    }
-    }
-})
+        }
+    })
 
-
-
-// addBtn.addEventListener("click",function(){
-//     if(addModal){
-//         modal.style.display = "flex"; // show it
-//         addModal = false; // setting variable for next click.
-//     }else{
-//         modal.style.display = "none";// hide it
-//         addModal = true; // setting it for next click.
-//     }
-// })
-
-// removeBtn.addEventListener("click",function(){
-//     if(removeFlag){
-//         removeBtn.style.color = "black";
-//         removeFlag = false;
-//     }else{
-//         removeBtn.style.color = "red";
-//         removeFlag = true;
-//     }
-// })
-
-for(let i=0;i<allFilterColor.length;i++){
-
-// allFilterColor[i].addEventListener("click",function(){
-//     let allTicketsColor = document.querySelectorAll(".ticket-color");
-//     // console.log(allFilterColor[i]);
-//     let currentSelected = allFilterColor[i].classList[1];
-//     // console.log(currentSelected);
-//     for(let j=0;j<allTicketsColor.length;j++){
-//         let currentTicketColor = allTicketsColor[j].classList[1];
-//         // console.log(currentTicketColor);
-//         if(currentSelected == currentTicketColor){
-//             allTicketsColor[j].parentElement.style.display = "block";
-//         }else{
-//             allTicketsColor[j].parentElement.style.display = "none";
-//         }
-//     }
-// })
-
-allFilterColor[i].addEventListener("dblclick",function(){
-    let allTicketsColor = document.querySelectorAll(".ticket-color");
-    for(let j=0;j<allTicketsColor.length;j++){
-        allTicketsColor[j].parentElement.style.display = "block";
-    }
-})
+    filterColor[i].addEventListener('dblclick',function(){
+        let allTicketsColor = document.querySelectorAll('.ticket-color');
+        for(let j=0;j<allTicketsColor.length;j++){
+            allTicketsColor[j].parentElement.style.display = 'block' // show it
+        }
+    })
 }
 
-textArea.addEventListener("keydown",function(e){
+let allPriorityColor = document.querySelectorAll('.priority-color');
+let priorityColor = 'red';
+for(let i=0;i<allPriorityColor.length;i++){
+    allPriorityColor[i].addEventListener('click',function(){
+        // console.log(allPriorityColor[i].classList[1]);
+        
+        //before we add border, let's remove border from all
+        for(let j=0;j<allPriorityColor.length;j++){
+            allPriorityColor[j].classList.remove('active');
+        }
+
+        allPriorityColor[i].classList.add('active'); // add border
+        //update the priority Color
+        priorityColor = allPriorityColor[i].classList[1];
+    })
+}
+
+// Instantiate
+var uid = new ShortUniqueId();
+
+addBtn.addEventListener('click',function(){
+    if(isModalHidden){
+        modalCont.style.display = "flex" // show the modal
+        isModalHidden = false
+    }else{
+        modalCont.style.display = 'none'// hide the modal
+        isModalHidden = true
+    }
+})
+
+deleteBtn.addEventListener('click',function(){
+    if(isDeleteBtnActive){
+        // make it black
+        deleteBtn.style.color = 'black'
+        isDeleteBtnActive = false; // update it for next click.
+    }else{
+        //make it red
+        deleteBtn.style.color = 'red';
+        isDeleteBtnActive = true;    // and update it for next click
+    }
+    
+})
+
+textArea.addEventListener('keydown',function(e){
     // console.log(e);
     let key = e.key;
+    // console.log(key);
     if(key == "Enter"){
-        // console.log(task);
-        let task = textArea.value;
-        createTicket(task,modalPriorityColor);
-        textArea.value = "";
-        modal.style.display = "none";
-        addModal = true
+        //generate a ticket
+        // console.log(textArea.value);
+        createTicket(textArea.value,priorityColor);
+        //hide the modal
+        modalCont.style.display = 'none'
+        isModalHidden = true
+        //empty the textArea value;
+        textArea.value = ""
     }
 })
 
 
-for(let i=0;i<allPriorityColor.length;i++){
-allPriorityColor[i].addEventListener("click",function(){
-        for(let j=0;j<allPriorityColor.length;j++){
-            if(allPriorityColor[j].classList.contains("active")){
-                allPriorityColor[j].classList.remove("active");
-            }
-        }
-        allPriorityColor[i].classList.add("active");
-        // console.log(allPriorityColor[i]);
-        // console.log(allPriorityColor[i].classList);
-        modalPriorityColor = allPriorityColor[i].classList[1];
-        // console.log(modalPriorityColor);
-})
-}
-
-
-function createTicket(task,modalPriorityColor,ticketId){
-    if(task == ""){
-        return;
-    }
+function createTicket(task,priorityColor,ticketId){
+    //crate the below structure with js and add it to main container
+    // <div class="ticket-cont">
+    //     <div class="ticket-color"></div>
+    //     <div class="ticket-id">#5gf832</div>
+    //     <div class="ticket-area">Some task</div>
+    // </div>
     let id;
-    if(ticketId){
+    if(ticketId){ // id is there it means we are creating from localstorage.
         id = ticketId
-    }else{
-        id = uid();
+    }else{ // else we are creating from UI. 
+        id = uid.rnd();
     }
-{/* <div class="ticket-cont">
-    <div class="ticket-color green"></div>
-    <div class="ticket-id">#eidut3</div>
-    <div class="ticket-area">Some Task</div>
-</div> */}
-
-    let ticketCont = document.createElement('div');
-    ticketCont.setAttribute("class","ticket-cont");
-    ticketCont.innerHTML = `<div class="ticket-color ${modalPriorityColor}"></div>
+     
+    let ticketCont = document.createElement('div'); //<div></div>
+    ticketCont.className = 'ticket-cont';// <div class="ticket-cont"></div>
+    ticketCont.innerHTML = `<div class="ticket-color ${priorityColor}"></div> 
                             <div class="ticket-id">#${id}</div>
                             <div class="ticket-area">${task}</div>
-                            <div class="lock-unlock"><i class="fa-solid fa-lock"></i></div>`
-    // console.log(ticketCont)
-    mainCont.append(ticketCont);
-    ticketArr.push({color:modalPriorityColor,id:id,task:task});
-    updateLocalStorage();
+                            <div class='lock-unlock-btn'>
+                                <i class="fa-solid fa-lock"></i>
+                            </div>`
+    // console.log(ticketCont);
+    if(!ticketId){ // only make changes in the array when ticketId is not passed. or 
+                    // we can say it is created with UI and not from the localStorage.
+        ticketArr.push({id:id,color:priorityColor,value:task});
+    // console.log(ticketArr);
+        updateLocalStorage();
+    }
+    mainCont.appendChild(ticketCont);
 
-    //handle delete of ticket
-    handleDelete(ticketCont,id);
-
-    //handle priority Color change
-    handlePriorityColor(ticketCont,id);
-    
-
-    //handle lock and unlock icon
-    handleLockUnlock(ticketCont,id);
-}
-
-function handleDelete(ticketCont,id){
-    ticketCont.addEventListener("click",function(){
-        if(removeFlag){
+    //handle delete ticket
+    ticketCont.addEventListener('click',function(){
+        if(isDeleteBtnActive){
             ticketCont.remove();
-            let idx = ticketArr.findIndex(function(obj){
-                return obj.id == id;
+            let ticketIndex = ticketArr.findIndex(function(ticketObj){
+                return ticketObj.id == id;
             })
-            ticketArr.splice(idx,1);
-            // console.log(ticketArr)
+            ticketArr.splice(ticketIndex,1);
             updateLocalStorage();
+            console.log(ticketArr);
         }
     })
-}
 
-function handlePriorityColor(ticketCont,id){
-    let ticketColor = ticketCont.querySelector(".ticket-color");
-    
-    ticketColor.addEventListener("click",function(){
-        // console.log(ticketColor);
-        // console.log(ticketColor.classList[1]);
-        let currentColor = ticketColor.classList[1];
-        let currentColorIndex = color.findIndex(function(col){
-            return col == currentColor;
-        });
-
-        // for(let i=0;i<color.length;i++){
-        //     if(color[i] == currentColor){
-        //         currentColorIndex = i;
-        //         break;
-        //     }
-        // }
-        // console.log(currentColorIndex);
-        // ["red","blue","green","black"]
-        // [   0,     1,      2,     3]
-        let nextColorIndex = (currentColorIndex+1)%color.length;
-        let nextColor = color[nextColorIndex];
-        console.log(nextColor);
-        ticketColor.classList.remove(currentColor);
-        ticketColor.classList.add(nextColor);
-        // let idx;
-        // for(let i=0;i<ticketArr.length;i++){
-        //     if(ticketArr[i].id == id){
-        //         idx = i;
-        //         break;
-        //     }
-        // }
-        let idx = ticketArr.findIndex(function(obj){
-            return obj.id == id;
-        })
-        // console.log(idx);
-        ticketArr[idx].color = nextColor;
-        // console.log(ticketArr);
-        updateLocalStorage();
-    })
-}
-
-function handleLockUnlock(ticketCont,id){
-    let lockUnlockBtn = ticketCont.querySelector(".lock-unlock i");
-    let taskArea = ticketCont.querySelector(".ticket-area");
-
-    lockUnlockBtn.addEventListener("click",function(){
-        console.log(lockUnlockBtn);
-        if(lockUnlockBtn.classList.contains("fa-lock")){
-            lockUnlockBtn.classList.remove("fa-lock");
-            lockUnlockBtn.classList.add("fa-lock-open");
-            taskArea.setAttribute("contenteditable","true");
+    //handle lock unlock ticket
+    let lockUnlockBtn = ticketCont.querySelector('.lock-unlock-btn i');
+    let ticketArea = ticketCont.querySelector('.ticket-area');
+    // console.log(lockUnlockBtn)
+    lockUnlockBtn.addEventListener('click',function(){
+        if(lockUnlockBtn.classList.contains('fa-lock')){
+            lockUnlockBtn.classList.remove('fa-lock');
+            lockUnlockBtn.classList.add('fa-lock-open');
+            ticketArea.setAttribute('contenteditable','true');
         }else{
-            lockUnlockBtn.classList.remove("fa-lock-open");
-            lockUnlockBtn.classList.add("fa-lock");
-            taskArea.setAttribute("contenteditable","false");
+            lockUnlockBtn.classList.remove('fa-lock-open');
+            lockUnlockBtn.classList.add('fa-lock');
+            ticketArea.setAttribute('contenteditable','false')
         }
-        console.log(ticketArr);
+        let ticketIndex = ticketArr.findIndex(function(ticketObj){
+            return ticketObj.id == id;
+        })
+        ticketArr[ticketIndex].value = ticketArea.innerText;
+        updateLocalStorage();
+        // console.log(ticketArr);
+    })
+
+    //handle Priority change or cyclic change of priority
+    let ticketColor = ticketCont.querySelector('.ticket-color');
+    ticketColor.addEventListener('click',function(){
+        // console.log(ticketColor);
+        // color = ['red','blue','green','pink'];
+        let currentColor = ticketColor.classList[1];
+        // currentColor = blue 
+        // console.log(currentColor);
+
         // let idx;
-        // for(let i=0;i<ticketArr.length;i++){
-        //     if(ticketArr[i].id == id){
+        // for(let i=0;i<color.length;i++){
+        //     if(currentColor == color[i]){
         //         idx = i;
         //         break;
         //     }
         // }
-        let idx = ticketArr.findIndex(function(obj){
-            return obj.id == id;
+        let idx = color.findIndex(function(col){
+            return col == currentColor;
         })
-        ticketArr[idx].task = taskArea.innerText;
+        let nextIdx = (idx+1)%color.length;
+        let nextColor = color[nextIdx];
+        // console.log(nextColor);
+        ticketColor.classList.remove(currentColor);
+        ticketColor.classList.add(nextColor)
+
+        let ticketIndex = ticketArr.findIndex(function(ticketObj){
+            return ticketObj.id == id;
+        })
+        ticketArr[ticketIndex].color = nextColor;
         updateLocalStorage();
+
     })
 }
+
 
 function updateLocalStorage(){
-    let strArr = JSON.stringify(ticketArr);
-    localStorage.setItem("tickets",strArr);
+    let ticketArrStr = JSON.stringify(ticketArr);
+    localStorage.setItem("TaskArr",ticketArrStr);
 }
