@@ -1,6 +1,6 @@
 # kanban-board:
 **Technologies Used**
-**Frontend:**
+Frontend:
 -HTML
 -CSS
 -JavaScript
