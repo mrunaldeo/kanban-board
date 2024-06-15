@@ -1,9 +1,9 @@
 # kanban-board:
 **Technologies Used**
-Frontend:
-+HTML
-+CSS
-+JavaScript
+**Frontend:**
+-HTML
+-CSS
+-JavaScript
 
 **Project Overview:**
 +A Kanban board is a visual tool used to manage tasks and projects by representing work items as cards on a board. 
