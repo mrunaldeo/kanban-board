@@ -6,7 +6,8 @@ Frontend:
 *JavaScript
 
 **Project Overview:**
--A Kanban board is a visual tool used to manage tasks and projects by representing work items as cards on a board. The board is divided into columns that represent different stages of the workflow (e.g., To Do, In Progress, Done). 
+-A Kanban board is a visual tool used to manage tasks and projects by representing work items as cards on a board. 
+-The board is divided into columns that represent different stages of the workflow (e.g., To Do, In Progress, Done). 
 -Users can move tasks between columns to reflect their current status.
 
 **Main Features**
